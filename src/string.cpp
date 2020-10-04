@@ -66,7 +66,7 @@ namespace diags::noenum::string {
 		auto it = args_data.get();
 		for (auto const& arg : storage)
 			*it++ = fmt::detail::make_arg<fmt::format_context>(arg);
-		fmt::format_args f_args{args_data.get(), arguments_.size()};
+		fmt::format_args f_args{args_data.get(), static_cast<int>(arguments_.size())};
 
 		return fmt::vformat(subject, f_args);
 	}

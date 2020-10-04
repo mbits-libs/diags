@@ -156,7 +156,8 @@ namespace diags::testing {
 			}
 
 			std::string expected;
-			expected.reserve(std::accumulate(begin(exp_str), end(exp_str), 0u,
+			expected.reserve(std::accumulate(begin(exp_str), end(exp_str),
+			                                 size_t{},
 			                                 [](size_t acc, auto const& view) {
 				                                 return acc + strlen(view);
 			                                 }));
@@ -188,7 +189,7 @@ namespace diags::testing {
 			sources host;
 
 			auto const text_length =
-			    std::accumulate(std::begin(text), std::end(text), 0u,
+			    std::accumulate(std::begin(text), std::end(text), size_t{},
 			                    [](size_t acc, auto const& view) {
 				                    return acc + view.length() + 1;
 			                    });
