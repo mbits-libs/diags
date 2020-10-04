@@ -1,0 +1,27 @@
+// DO NOT MODIFY, THIS FILE IS GENERATED FROM version.hpp.in
+//
+// @PROJECT_NAME@/@PROJECT_VERSION@@PROJECT_VERSION_STABILITY@
+//
+// Copyright (c) 2020 midnightBITS
+// This code is licensed under MIT license (see LICENSE for details)
+
+#pragma once
+
+// clang-format off
+
+#define DIAGS_NAME "@PROJECT_NAME@"
+#define DIAGS_VERSION_MAJOR @PROJECT_VERSION_MAJOR@
+#define DIAGS_VERSION_MINOR @PROJECT_VERSION_MINOR@
+#define DIAGS_VERSION_PATCH @PROJECT_VERSION_PATCH@
+#define DIAGS_VERSION_STABILITY "@PROJECT_VERSION_STABILITY@"
+
+#ifndef RC_INVOKED
+#include <semver/semver.hh>
+
+namespace diags {
+	inline constexpr semver::project_version version{"@PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@.@PROJECT_VERSION_PATCH@@PROJECT_VERSION_STABILITY@"};
+	semver::project_version get_version() noexcept;
+}  // namespace diag
+#endif  // RC_INVOKED
+
+// clang-format on
