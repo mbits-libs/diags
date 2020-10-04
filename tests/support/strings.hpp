@@ -10,12 +10,12 @@
 namespace diags::testing {
 	template <typename Strings, typename AltStrings>
 	struct strings {
-		Strings strings{};
+		Strings std_strings{};
 		AltStrings alt_strings{};
 
 		template <typename TranslatorType>
 		translator choose(bool use_alt) {
-			return choose<TranslatorType>(use_alt, strings, alt_strings);
+			return choose<TranslatorType>(use_alt, std_strings, alt_strings);
 		}
 
 	private:

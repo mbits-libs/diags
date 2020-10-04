@@ -12,13 +12,14 @@
 
 namespace diags::testing {
 	namespace {
-		static constexpr std::string_view line{"Hello, World!" NEWLINE};
-	}
+		static constexpr std::string_view line_bin{"Hello, World!" NEWLINE};
+		static constexpr std::string_view line_txt{"Hello, World!\n"};
+	}  // namespace
 
-	TEST(streams, stdout) {
+	TEST(streams, stdout_test) {
 		outstream& ref = get_stdout();
 		auto written = ref.print("Hello, {}!\n", "World");
-		EXPECT_EQ(line.size(), written);
+		EXPECT_EQ(line_txt.size(), written);
 	}
 
 	TEST(streams, file) {
@@ -41,17 +42,17 @@ namespace diags::testing {
 
 			outstream& ref = out;
 			auto written = ref.print("Hello, {}!\n", "World");
-			EXPECT_EQ(line.size(), written);
+			EXPECT_EQ(line_txt.size(), written);
 		}
 
 		{
 			file = fs::fopen(temp / "file.txt", "rb");
 			EXPECT_TRUE(file);
 
-			std::vector<char> data(10 * line.size());
+			std::vector<char> data(10 * line_bin.size());
 			auto actual_size = file.load(data.data(), data.size());
 			auto in_line = std::string_view{data.data(), actual_size};
-			EXPECT_EQ(in_line, line);
+			EXPECT_EQ(in_line, line_bin);
 		}
 
 		{
@@ -61,7 +62,7 @@ namespace diags::testing {
 			auto data = file.read();
 			auto in_line = std::string_view{
 			    reinterpret_cast<char const*>(data.data()), data.size()};
-			EXPECT_EQ(in_line, line);
+			EXPECT_EQ(in_line, line_bin);
 		}
 	}
 }  // namespace diags::testing
