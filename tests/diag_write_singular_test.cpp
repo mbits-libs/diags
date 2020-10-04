@@ -19,12 +19,7 @@ namespace diags::testing::singular {
 
 	TEST_P(diags_cmp_singular, comp) { comp_test(); }
 
-#if 0
-	// This test, for some reason always ends up inside std::terminate...
 	TEST(diags_write, singular_purecall) {
-#ifndef __cpp_exceptions
-#error Exceptions must be enabled
-#endif
 		strings_mock strings{};
 		auto tr = strings.make();
 
@@ -32,7 +27,6 @@ namespace diags::testing::singular {
 
 		EXPECT_THROW(failing.translated(tr), std::runtime_error);
 	}
-#endif
 
 	using diagnostic_write = testing::diagnostic_write<diagnostic_str>;
 

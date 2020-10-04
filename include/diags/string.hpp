@@ -76,8 +76,7 @@ namespace diags::noenum::string {
 			return !(*this == right);
 		}
 
-		std::string_view translated(
-		    diags::translator const& tr) const noexcept {
+		std::string_view translated(diags::translator const& tr) const {
 			return tr.get(id);
 		}
 	};
@@ -100,8 +99,7 @@ namespace diags::noenum::string {
 			return !(*this == right);
 		}
 
-		std::string_view translated(
-		    diags::translator const& tr) const noexcept {
+		std::string_view translated(diags::translator const& tr) const {
 			return tr.get(id, count);
 		}
 	};

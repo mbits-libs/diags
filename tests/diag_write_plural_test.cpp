@@ -17,14 +17,12 @@ namespace diags::testing::plural {
 
 	TEST_P(diags_cmp_plural, comp) { comp_test(); }
 
-#if 0
 	TEST(diags_write, plural_purecall) {
 		strings_mock strings{};
 		auto tr = strings.make();
 		noenum::string::singular failing{10000};
-		EXCPECT_THROW(failing.translated(tr), std::runtime_error);
+		EXPECT_THROW(failing.translated(tr), std::runtime_error);
 	}
-#endif
 
 	using diagnostic_write = testing::diagnostic_write<diagnostic_str>;
 
