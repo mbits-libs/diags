@@ -1,6 +1,8 @@
 set(DATA_DIR "${CMAKE_CURRENT_SOURCE_DIR}/data")
 message(STATUS "Test data: ${DATA_DIR}")
 
+configure_file(support/default_data_path.hpp.in support/default_data_path.hpp @ONLY)
+
 set(TEST_SRCS
   assorted_tests.cpp
   diag_write_common.hpp
@@ -28,6 +30,7 @@ set(TEST_SRCS
   support/support.cpp
   support/support.hpp
   support/test_with_diagnostics.hpp
+  "${CMAKE_CURRENT_BINARY_DIR}/support/default_data_path.hpp"
 )
 
 add_executable(${PROJECT_NAME}-test ${TEST_SRCS})
@@ -35,7 +38,7 @@ set_target_properties(${PROJECT_NAME}-test PROPERTIES FOLDER tests)
 target_compile_options(${PROJECT_NAME}-test PRIVATE ${DIAGS_ADDITIONAL_WALL_FLAGS})
 target_compile_features(${PROJECT_NAME}-test PRIVATE cxx_std_17)
 target_link_libraries(${PROJECT_NAME}-test CONAN_PKG::gtest ${PROJECT_NAME})
-target_include_directories(${PROJECT_NAME}-test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(${PROJECT_NAME}-test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
 add_test(NAME ${PROJECT_NAME}.assorted COMMAND ${PROJECT_NAME}-test --gtest_filter=Assorted.*)
 add_test(NAME ${PROJECT_NAME}.source COMMAND ${PROJECT_NAME}-test --gtest_filter=source_line.*:source_location.*:streams.* --data_path=${DATA_DIR})

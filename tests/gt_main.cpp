@@ -65,9 +65,10 @@
 #include <filesystem>
 #include <iostream>
 #include <string_view>
+#include <support/default_data_path.hpp>
 #include "gtest/gtest.h"
 
-std::filesystem::path TESTING_data_path{};
+std::filesystem::path TESTING_data_path = default_data_path;
 
 namespace {
 	template <typename String>
