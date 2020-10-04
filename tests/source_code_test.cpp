@@ -28,6 +28,9 @@ namespace diags::testing {
 		sources host{};
 
 		auto code = host.open((TESTING_data_path / "the_raven.txt").string());
+
+		ASSERT_TRUE(code.valid());
+
 		auto contents = code.data();
 		auto actual = std::string{
 		    reinterpret_cast<char const*>(contents.data()), contents.size()};
@@ -38,6 +41,8 @@ namespace diags::testing {
 	TEST(source_code, read_one_line) {
 		sources host{};
 		auto code = host.open((TESTING_data_path / "the_raven.txt").string());
+
+		ASSERT_TRUE(code.valid());
 
 		std::string_view line = the_raven[0];
 		while (!line.empty()) {
@@ -63,6 +68,9 @@ namespace diags::testing {
 
 		sources host{};
 		auto code = host.open((TESTING_data_path / "the_raven.txt").string());
+
+		ASSERT_TRUE(code.valid());
+
 		auto pos_seek = code.seek(10 * 1024 * 1024);
 		auto pos_tell = code.tell();
 
