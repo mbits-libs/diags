@@ -5,38 +5,39 @@
 #include "source_view.hpp"
 
 namespace diags {
-	template <typename Key>
-	sources::shared_info sources::lookup(Key const& path) {
+	sources::shared_info sources::lookup(fs::path const& path) {
 		auto it = files_.lower_bound(path);
 		if (it == end(files_) || it->first != path) {
 			auto current = ++current_value_;
 
 			auto info =
-			    std::make_shared<sources::info>(std::string{path}, current);
+			    std::make_shared<sources::info>(path, current);
 
-			it = files_.insert(it, {std::string{path}, info});
+			it = files_.insert(it, {path, info});
 			reverse_[current] = info;
 		}
 
 		return it->second;
 	}
 
-	template <typename Key>
-	sources::shared_info sources::lookup(Key const& path) const {
+	sources::shared_info sources::lookup(fs::path const& path) const {
 		auto it = files_.lower_bound(path);
 		if (it == end(files_) || it->first != path) return {};
 
 		return it->second;
 	}
 
-	std::string_view sources::filename(location const& loc) const {
+	fs::path const& sources::filename(location const& loc) const {
 		auto it = reverse_.find(loc.token);
-		if (it == end(reverse_)) return {};
+		if (it == end(reverse_)) {
+			static fs::path empty{};
+			return empty;
+		}
 
 		return it->second->path;
 	}
 
-	source_code sources::open(std::string const& path, char const* mode) {
+	source_code sources::open(fs::path const& path, char const* mode) {
 		auto item = lookup(path);
 		if (!item->contents) {
 			(item->contents =
@@ -46,7 +47,7 @@ namespace diags {
 		return item->contents;
 	}
 
-	source_code sources::source(std::string_view const& path) {
+	source_code sources::source(fs::path const& path) {
 		auto item = lookup(path);
 		if (!item->contents)
 			item->contents =
@@ -55,12 +56,12 @@ namespace diags {
 		return item->contents;
 	}
 
-	source_code sources::source(std::string_view const& path) const {
+	source_code sources::source(fs::path const& path) const {
 		auto item = lookup(path);
 		return item ? item->contents : source_code{};
 	}
 
-	void sources::set_contents(std::string const& path,
+	void sources::set_contents(fs::path const& path,
 	                           std::vector<std::byte> data) {
 		auto item = lookup(path);
 		if (item) {
@@ -70,7 +71,7 @@ namespace diags {
 		}
 	}
 
-	void sources::set_contents(std::string const& path, std::string_view data) {
+	void sources::set_contents(fs::path const& path, std::string_view data) {
 		auto item = lookup(path);
 		if (item) {
 			std::vector<std::byte> bytes(data.length());

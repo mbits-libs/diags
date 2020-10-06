@@ -4,6 +4,7 @@
 #pragma once
 #include <diags/location.hpp>
 #include <diags/string.hpp>
+#include <diags/streams.hpp>
 #include <vector>
 
 namespace diags {
@@ -83,7 +84,7 @@ namespace diags {
 		            link_type links,
 		            size_t depth) const;
 
-		std::string message_line(std::string_view const& filename,
+		std::string message_line(fs::path const& filename,
 		                         translator const& tr,
 		                         link_type links,
 		                         size_t depth) const;

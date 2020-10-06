@@ -37,7 +37,7 @@ namespace diags {
 			child.format(output, host, tr, links, depth + 1);
 	}
 
-	std::string diagnostic::message_line(std::string_view const& filename,
+	std::string diagnostic::message_line(fs::path const& filename,
 	                                     translator const& tr,
 	                                     link_type links,
 	                                     size_t depth) const {
@@ -60,7 +60,12 @@ namespace diags {
 			    "{3}: ",
 			};
 
-			msg_line += fmt::format(links_fmt[index], filename, start_.line,
+			auto u8filename = filename.u8string();
+			auto filepath = std::string_view{
+			    reinterpret_cast<char const*>(u8filename.data()),
+			    u8filename.size()};
+
+			msg_line += fmt::format(links_fmt[index], filepath, start_.line,
 			                        start_.column, tr.get(severity_));
 		}
 

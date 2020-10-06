@@ -27,7 +27,7 @@ namespace diags::testing {
 
 		sources host{};
 
-		auto code = host.open((TESTING_data_path / "the_raven.txt").string());
+		auto code = host.open(TESTING_data_path / "the_raven.txt");
 
 		ASSERT_TRUE(code.valid());
 
@@ -40,7 +40,7 @@ namespace diags::testing {
 
 	TEST(source_code, read_one_line) {
 		sources host{};
-		auto code = host.open((TESTING_data_path / "the_raven.txt").string());
+		auto code = host.open(TESTING_data_path / "the_raven.txt");
 
 		ASSERT_TRUE(code.valid());
 
@@ -67,7 +67,7 @@ namespace diags::testing {
 		auto const expected = the_raven_length;
 
 		sources host{};
-		auto code = host.open((TESTING_data_path / "the_raven.txt").string());
+		auto code = host.open(TESTING_data_path / "the_raven.txt");
 
 		ASSERT_TRUE(code.valid());
 

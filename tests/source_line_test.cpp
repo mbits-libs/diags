@@ -13,7 +13,7 @@ namespace diags::testing {
 
 	TEST(source_line, lines) {
 		sources host;
-		auto src = host.open((TESTING_data_path / "the_raven.txt").string());
+		auto src = host.open(TESTING_data_path / "the_raven.txt");
 
 		EXPECT_TRUE(src.valid());
 		EXPECT_EQ(""sv, src.line(0)) << "Line: 0";
@@ -31,7 +31,7 @@ namespace diags::testing {
 
 	TEST(source_line, lines_not_found) {
 		sources host;
-		auto src = host.open((TESTING_data_path / "no-such.txt").string());
+		auto src = host.open(TESTING_data_path / "no-such.txt");
 
 		EXPECT_FALSE(src.valid());
 		EXPECT_EQ(src.line(0), ""sv) << "Line: 0";
