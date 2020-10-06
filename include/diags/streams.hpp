@@ -76,7 +76,11 @@ namespace diags {
 		                          std::size_t length) noexcept = 0;
 
 		std::size_t write(std::string const& s) noexcept {
-			return write(s.c_str(), s.length());
+			return write(s.data(), s.size());
+		}
+
+		std::size_t write(std::string_view const& s) noexcept {
+			return write(s.data(), s.size());
 		}
 
 		template <typename T>

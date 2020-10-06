@@ -11,7 +11,7 @@ _Marcin_
 
 ### Things I still want to have:
 
-- [ ] Standalone printer
+- [x] Standalone printer
 - [ ] Color-based printer (color for severity and hints below the source line, bold for filename and position)
 - [ ] `sources::open` / `source` / `set_contents` -- needs more `canonical` / `weakly_canonical`. 
 - [ ] Print-on-push as alternative to printing through `sources::diagnostic_set()`.

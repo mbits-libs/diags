@@ -105,7 +105,7 @@ endif()
 configure_file(src/version.hpp.in include/diags/version.hpp @ONLY)
 
 set(SRCS
-  src/diagnostic.cpp
+  src/printer.cpp
   src/source_code.cpp
   src/sources.cpp
   src/streams.cpp
@@ -114,6 +114,7 @@ set(SRCS
   src/translator.cpp
   src/version.cpp
   include/diags/diagnostic.hpp
+  include/diags/printer.hpp
   include/diags/location.hpp
   include/diags/source_code.hpp
   include/diags/sources.hpp

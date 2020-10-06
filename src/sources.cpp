@@ -5,28 +5,6 @@
 #include "source_view.hpp"
 
 namespace diags {
-	sources::shared_info sources::lookup(fs::path const& path) {
-		auto it = files_.lower_bound(path);
-		if (it == end(files_) || it->first != path) {
-			auto current = ++current_value_;
-
-			auto info =
-			    std::make_shared<sources::info>(path, current);
-
-			it = files_.insert(it, {path, info});
-			reverse_[current] = info;
-		}
-
-		return it->second;
-	}
-
-	sources::shared_info sources::lookup(fs::path const& path) const {
-		auto it = files_.lower_bound(path);
-		if (it == end(files_) || it->first != path) return {};
-
-		return it->second;
-	}
-
 	fs::path const& sources::filename(location const& loc) const {
 		auto it = reverse_.find(loc.token);
 		if (it == end(reverse_)) {
@@ -86,10 +64,39 @@ namespace diags {
 		set_.push_back(std::move(diag));
 	}
 
+	void sources::print_diagnostic(diagnostic const& diag) const {
+		prn_->print(diag, *this);
+	}
+
+	void sources::print_diagnostics(std::vector<diagnostic> const& diags) const {
+		prn_->print(diags, *this);
+	}
+
 	bool sources::has_errors() const noexcept {
 		for (auto const& diag : set_) {
 			if (diag.severity() > severity::warning) return true;
 		}
 		return false;
+	}
+
+	sources::shared_info sources::lookup(fs::path const& path) {
+		auto it = files_.lower_bound(path);
+		if (it == end(files_) || it->first != path) {
+			auto current = ++current_value_;
+
+			auto info = std::make_shared<sources::info>(path, current);
+
+			it = files_.insert(it, {path, info});
+			reverse_[current] = info;
+		}
+
+		return it->second;
+	}
+
+	sources::shared_info sources::lookup(fs::path const& path) const {
+		auto it = files_.lower_bound(path);
+		if (it == end(files_) || it->first != path) return {};
+
+		return it->second;
 	}
 }  // namespace diags

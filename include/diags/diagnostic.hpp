@@ -3,8 +3,8 @@
 
 #pragma once
 #include <diags/location.hpp>
-#include <diags/string.hpp>
 #include <diags/streams.hpp>
+#include <diags/string.hpp>
 #include <vector>
 
 namespace diags {
@@ -35,19 +35,6 @@ namespace diags {
 		    , message_{std::move(message)}
 		    , children_{std::move(children)} {}
 
-		std::vector<std::string> format(
-		    sources const& host,
-		    translator const& tr,
-		    link_type links = link_type::native) const {
-			auto const lines = calc_lines(host);
-
-			std::vector<std::string> result{};
-			result.reserve(lines);
-
-			format(result, host, tr, links, 0);
-			return result;
-		}
-
 		diagnostic& with(diagnostic sub) {
 			children_.emplace_back(std::move(sub));
 			return *this;
@@ -70,32 +57,6 @@ namespace diags {
 		static constexpr size_t tab_size = 3;
 
 	private:
-		struct line_indices {
-			std::string line;
-			size_t start_column;
-			size_t stop_column;
-		};
-
-		size_t calc_lines(sources const& host) const noexcept;
-
-		void format(std::vector<std::string>& output,
-		            sources const& host,
-		            translator const& tr,
-		            link_type links,
-		            size_t depth) const;
-
-		std::string message_line(fs::path const& filename,
-		                         translator const& tr,
-		                         link_type links,
-		                         size_t depth) const;
-
-		std::pair<std::string, std::string> hint_lines(
-		    source_code& source) const;
-
-		line_indices prepare(std::string_view,
-		                     size_t start_col,
-		                     size_t stop_col) const noexcept;
-
 		location start_{};
 		location stop_{};
 		diags::severity severity_{diags::severity::note};

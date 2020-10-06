@@ -2,6 +2,7 @@
 // This code is licensed under MIT license (see LICENSE for details)
 
 #include <gtest/gtest.h>
+#include <diags/printer.hpp>
 #include <diags/sources.hpp>
 #include <numeric>
 #include <support/outstrstream.hpp>
@@ -142,18 +143,15 @@ namespace diags::testing {
 	protected:
 		void print_test() {
 			auto [value, exp_str, _, _2] = this->GetParam();
-			sources host;
 
-			outstrstream actual;
 			Strings strings_source;
 			auto tr = strings_source.template choose<TranslatorType>(
 			    value.use_alt_tr);
 
-			for (auto const& line :
-			     conv(host, value).format(host, tr, value.link)) {
-				actual.write(line);
-				actual.write('\n');
-			}
+			outstrstream actual{};
+			sources host{};
+			host.set_printer<basic_printer>(&actual, tr, value.link);
+			host.print_diagnostic(conv(host, value));
 
 			std::string expected;
 			expected.reserve(std::accumulate(begin(exp_str), end(exp_str),
@@ -186,7 +184,14 @@ namespace diags::testing {
 			    "\twords\t= value1, value2, value3"sv};
 
 			auto [value, exp_str, _, use_view_content] = this->GetParam();
-			sources host;
+
+			Strings strings_source;
+			auto tr = strings_source.template choose<TranslatorType>(
+			    value.use_alt_tr);
+
+
+			outstrstream actual{};
+			sources host{};
 
 			auto const text_length =
 			    std::accumulate(std::begin(text), std::end(text), size_t{},
@@ -214,16 +219,9 @@ namespace diags::testing {
 				host.set_contents(value.filename, contents);
 			}
 
-			outstrstream actual;
-			Strings strings_source;
-			auto tr = strings_source.template choose<TranslatorType>(
-			    value.use_alt_tr);
-
-			for (auto const& line :
-			     conv(host, value).format(host, tr, value.link)) {
-				actual.write(line);
-				actual.write('\n');
-			}
+			host.set_printer<basic_printer>(&actual, tr, value.link);
+			host.push_back(conv(host, value));
+			host.print_diagnostics();
 
 			std::string expected;
 			{
@@ -236,6 +234,7 @@ namespace diags::testing {
 
 		void has_errors_test() {
 			auto [value, ignore, _, _2] = this->GetParam();
+
 			sources host;
 			host.push_back(conv(host, value));
 
