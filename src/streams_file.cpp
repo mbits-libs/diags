@@ -11,21 +11,16 @@ namespace diags::fs {
 #pragma warning(push)
 #pragma warning(disable : 4996)
 #endif
-		std::unique_ptr<wchar_t[]> heap;
 		wchar_t buff[20];
-		wchar_t* ptr = buff;
-		auto len = mode ? strlen(mode) : 0;
-		if (len >= sizeof(buff)) {
-			heap.reset(new (std::nothrow) wchar_t[len + 1]);
-			if (!heap) return nullptr;
-			ptr = heap.get();
-		}
+		auto len = std::min(mode ? strlen(mode) : 0, sizeof(buff) - 1);
 
-		auto dst = ptr;
-		while (*dst++ = *mode++)
-			;
+		auto dst = buff;
+		auto end = dst + len;
+		while (dst != end)
+			*dst++ = *mode++;
+		*dst = 0;
 
-		return ::_wfopen(file.native().c_str(), ptr);
+		return ::_wfopen(file.native().c_str(), buff);
 #ifdef _MSC_VER
 #pragma warning(pop)
 #endif
