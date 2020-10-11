@@ -81,6 +81,33 @@ namespace diags::testing {
 		return d;
 	}
 
+	inline std::pair<std::string_view, std::string_view> color_select(
+	    severity sev,
+	    color color_type) {
+		static auto const color_potentially_allowed = get_stdout().is_tty();
+		bool color_allowed = color_type == color::automatic
+		                         ? color_potentially_allowed
+		                         : color_type == color::always;
+		using color_info =
+		    std::pair<diags::severity,
+		              std::pair<std::string_view, std::string_view>>;
+		static constexpr std::string_view reset = "\x1b[0m";
+		static constexpr color_info colors[] = {
+		    {severity::verbose, {}},
+		    {severity::note, {"\x1b[1;36m", reset}},
+		    {severity::warning, {"\x1b[1;35m", reset}},
+		    {severity::error, {"\x1b[1;31m", reset}},
+		};
+
+		static constexpr auto colors_size = sizeof(colors) / sizeof(colors[0]);
+
+		if (!color_allowed) return colors[0].second;
+		for (auto [cmp, clr] : colors) {
+			if (cmp == sev) return clr;
+		}
+		return colors[colors_size - 1].second;
+	}
+
 	template <typename It, typename DiagnosticStr, size_t length>
 	void output(std::string& expected,
 	            It& curr,
@@ -88,6 +115,9 @@ namespace diags::testing {
 	            expected_diagnostic<DiagnosticStr> const& value,
 	            std::string_view const (&text)[length]) {
 		if (curr != end) expected.append(*curr++);
+
+		auto [color_start, color_reset] =
+		    color_select(value.sev, value.color_type);
 
 		if (value.line) {
 			struct index {
@@ -104,8 +134,14 @@ namespace diags::testing {
 			for (auto c : line) {
 				++len;
 				++pos;
-				if (col.raw == pos) col.mapped = len;
-				if (col_end.raw == pos) col_end.mapped = len;
+				if (col.raw == pos) {
+					col.mapped = len;
+					expected.append(color_start);
+				}
+				if (col_end.raw == pos) {
+					col_end.mapped = len;
+					expected.append(color_reset);
+				}
 				if (c == '\t') {
 					expected.push_back(' ');
 					while (len % diagnostic::tab_size) {
@@ -114,6 +150,10 @@ namespace diags::testing {
 					}
 				} else {
 					expected.push_back(c);
+				}
+
+				if (!col_end.raw && col.raw == pos) {
+					expected.append(color_reset);
 				}
 			}
 			if (col.raw && !col.mapped) col.mapped = len + (col.raw - pos);
@@ -124,11 +164,13 @@ namespace diags::testing {
 			if (value.column) {
 				for (auto i = 0u; i < (col.mapped - 1); ++i)
 					expected.push_back(' ');
+				expected.append(color_start);
 				expected.push_back('^');
 				if (value.column_end) {
 					for (auto i = col.mapped; i < (col_end.mapped - 1); ++i)
 						expected.push_back('~');
 				}
+				expected.append(color_reset);
 				expected.push_back('\n');
 			}
 		}
@@ -150,7 +192,8 @@ namespace diags::testing {
 
 			outstrstream actual{};
 			sources host{};
-			host.set_printer<basic_printer>(&actual, tr, value.link);
+			host.set_printer<printer>(&actual, tr, value.color_type,
+			                          value.link);
 			host.print_diagnostic(conv(host, value));
 
 			std::string expected;
@@ -189,7 +232,6 @@ namespace diags::testing {
 			auto tr = strings_source.template choose<TranslatorType>(
 			    value.use_alt_tr);
 
-
 			outstrstream actual{};
 			sources host{};
 
@@ -219,7 +261,8 @@ namespace diags::testing {
 				host.set_contents(value.filename, contents);
 			}
 
-			host.set_printer<basic_printer>(&actual, tr, value.link);
+			host.set_printer<printer>(&actual, tr, value.color_type,
+			                          value.link);
 			host.push_back(conv(host, value));
 			host.print_diagnostics();
 

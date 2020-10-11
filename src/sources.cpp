@@ -68,7 +68,8 @@ namespace diags {
 		prn_->print(diag, *this);
 	}
 
-	void sources::print_diagnostics(std::vector<diagnostic> const& diags) const {
+	void sources::print_diagnostics(
+	    std::vector<diagnostic> const& diags) const {
 		prn_->print(diags, *this);
 	}
 

@@ -18,6 +18,7 @@ namespace diags::testing {
 		DiagnosticStr message{};
 		link_type link{link_type::gcc};
 		bool use_alt_tr{true};
+		color color_type{color::automatic};
 		unsigned column_end{0};
 		std::vector<expected_diagnostic<DiagnosticStr>> subs{};
 	};
@@ -30,7 +31,12 @@ namespace diags::testing {
 		if (diag.column_end) o << ':' << diag.column_end;
 		return o << ',' << name(diag.sev) << "," << diag.message << ","
 		         << (diag.link == link_type::gcc ? "gcc" : "vc") << ","
-		         << (diag.use_alt_tr ? "alt" : "tr") << '}';
+		         << (diag.use_alt_tr ? "alt" : "tr") << ','
+		         << (diag.color_type == color::automatic
+		                 ? "auto"
+		                 : diag.color_type == color::always ? "always"
+		                                                    : "never")
+		         << '}';
 	}
 
 	struct UnexpectedDiags {

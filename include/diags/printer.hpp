@@ -8,27 +8,22 @@
 namespace diags {
 	class sources;
 
+	enum class color { never, always, automatic };
+
 	struct printer {
 		printer(outstream* output,
 		        translator const& tr,
-		        link_type link = link_type::native)
-		    : tr_{tr}, link_{link}, output_(output) {}
+		        color color_allowed,
+		        link_type link = link_type::native);
 		virtual ~printer();
 
-		void print(diagnostic const& input,
-		           sources const& host);
+		void print(diagnostic const& input, sources const& host);
 
-		void print(std::vector<diagnostic> const& input,
-		           sources const& host);
+		void print(std::vector<diagnostic> const& input, sources const& host);
 
 		static std::string filename_helper(location const&,
 		                                   sources const&,
 		                                   link_type);
-
-		static std::pair<std::string, std::string> hint_lines_helper(
-		    source_code& source,
-		    location const& start,
-		    location const& stop);
 
 		struct line_indices {
 			std::string line;
@@ -40,30 +35,34 @@ namespace diags {
 		                                       size_t start_col,
 		                                       size_t stop_col);
 
+		static void print_hint_lines(outstream* output,
+		                             source_code& source,
+		                             location const& start,
+		                             location const& stop,
+		                             std::string_view color_start = {},
+		                             std::string_view color_stop = {});
+
+		static std::pair<std::string_view, std::string_view> severity_color(
+		    severity,
+		    bool color_allowed) noexcept;
+
 	protected:
 		struct context {
 			sources const& host;
 			translator const tr;
 			link_type const link;
 			outstream* output;
+			bool color_allowed;
 			size_t depth{0};
 		};
 
-		virtual void print_one_diagnostic(diagnostic const&, context&) = 0;
+		virtual void print_one_diagnostic(diagnostic const&, context&);
+		virtual void print_message_line(diagnostic const&, context&);
 		void print_recursive(diagnostic const&, context&);
 
-	private:
 		translator const tr_;
 		link_type const link_;
 		outstream* output_;
-	};
-
-	class basic_printer : public printer {
-	public:
-		using printer::printer;
-		void print_one_diagnostic(diagnostic const&, context&) final;
-
-	private:
-		void print_message_line(diagnostic const&, context&);
+		color color_allowed_;
 	};
 }  // namespace diags

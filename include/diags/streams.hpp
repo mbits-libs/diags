@@ -72,6 +72,7 @@ namespace diags {
 		outstream& operator=(outstream&&) = default;
 
 		virtual ~outstream();
+		virtual bool is_tty() const noexcept;
 		virtual std::size_t write(void const* buffer,
 		                          std::size_t length) noexcept = 0;
 
@@ -112,6 +113,7 @@ namespace diags {
 
 	public:
 		std_outstream(std::FILE* ptr) noexcept;
+		bool is_tty() const noexcept final;
 		using outstream::write;
 		std::size_t write(void const* data, std::size_t length) noexcept final;
 	};
@@ -122,10 +124,8 @@ namespace diags {
 		fs::file file;
 
 	public:
-		foutstream(fs::file file) noexcept : file(std::move(file)) {}
+		foutstream(fs::file file) noexcept;
 		using outstream::write;
-		std::size_t write(void const* data, std::size_t length) noexcept final {
-			return file.store(data, length);
-		}
+		std::size_t write(void const* data, std::size_t length) noexcept final;
 	};
 }  // namespace diags
