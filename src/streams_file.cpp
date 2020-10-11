@@ -26,7 +26,7 @@ namespace diags::fs {
 #endif
 
 #else  // WIN32 || _WIN32
-		return std::fopen(file.string().c_str(), mode);
+		return std::fopen(file.native().c_str(), mode);
 #endif
 	}
 
