@@ -37,7 +37,7 @@ add_executable(${PROJECT_NAME}-test ${TEST_SRCS})
 set_target_properties(${PROJECT_NAME}-test PROPERTIES FOLDER tests)
 target_compile_options(${PROJECT_NAME}-test PRIVATE ${DIAGS_ADDITIONAL_WALL_FLAGS})
 target_compile_features(${PROJECT_NAME}-test PRIVATE cxx_std_17)
-target_link_libraries(${PROJECT_NAME}-test CONAN_PKG::gtest ${PROJECT_NAME})
+target_link_libraries(${PROJECT_NAME}-test GTest::GTest ${PROJECT_NAME})
 target_include_directories(${PROJECT_NAME}-test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
 add_test(NAME ${PROJECT_NAME}.assorted COMMAND ${PROJECT_NAME}-test --gtest_filter=Assorted.*)

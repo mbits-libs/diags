@@ -7,3 +7,4 @@ gtest:build_gmock=False
 
 [generators]
 cmake
+cmake_find_package_multi

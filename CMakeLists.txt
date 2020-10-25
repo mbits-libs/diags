@@ -24,7 +24,9 @@ if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
   find_package(Python3 COMPONENTS Interpreter REQUIRED)
 
   include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-  conan_basic_setup(TARGETS)
+  conan_basic_setup()
+  find_package(GTest REQUIRED CONFIG HINTS ${PROJECT_BINARY_DIR})
+  find_package(fmt REQUIRED CONFIG HINTS ${PROJECT_BINARY_DIR})
 else()
   message(STATUS "diag: Subdir")
   set(DIAGS_STANDALONE OFF)
@@ -137,7 +139,7 @@ target_include_directories(${PROJECT_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/src
     ${CMAKE_CURRENT_BINARY_DIR}/src
 )
-target_link_libraries(${PROJECT_NAME} PUBLIC CONAN_PKG::fmt CONAN_PKG::gtest semver)
+target_link_libraries(${PROJECT_NAME} PUBLIC fmt::fmt semver)
 set_target_properties(${PROJECT_NAME} PROPERTIES
   VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
 )
