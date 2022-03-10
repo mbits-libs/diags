@@ -35,16 +35,14 @@ endif()
 set(DIAGS_TESTING ${DIAGS_STANDALONE} CACHE BOOL "Compile and/or run self-tests")
 set(DIAGS_INSTALL ${DIAGS_STANDALONE} CACHE BOOL "Install the library")
 
-set(COVERALLS_PREFIX DIAGS_)
-list(APPEND DIAGS_COVERALLS_DIRS
-  include/diags
-  src
-)
+if (DIAGS_TESTING)
+  set(COVERALLS_PREFIX DIAGS_)
+  list(APPEND DIAGS_COVERALLS_DIRS
+    include/diags
+    src
+  )
 
-include(tools/coveralls/Coveralls.cmake)
-
-if (DIAGS_COVERALLS AND NOT DIAGS_TESTING)
-  message(FATAL_ERROR "Coveralls are useless without -DDIAGS_TESTING=ON")
+  include(tools/coveralls/Coveralls.cmake)
 endif()
 
 add_subdirectory(external)
