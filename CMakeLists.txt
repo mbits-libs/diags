@@ -3,7 +3,7 @@
 
 cmake_minimum_required (VERSION 3.12)
 project (diags
-  VERSION 0.9.0
+  VERSION 0.9.1
   DESCRIPTION "Diagnostic library with source positions, ranges and hints."
   LANGUAGES CXX)
 
@@ -48,7 +48,7 @@ if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 
   find_package(GTest REQUIRED)
   find_package(fmt REQUIRED)
-  find_package(mbits-semver)
+  find_package(mbits-semver REQUIRED)
 
 else()
   message(STATUS "diag: Subdir")
@@ -67,8 +67,6 @@ if (DIAGS_TESTING)
 
   include(tools/coveralls/Coveralls.cmake)
 endif()
-
-add_subdirectory(external)
 
 # See <https://github.com/lefticus/cppbestpractices/blob/v1.0.0/02-Use_the_Tools_Available.md#compilers>
 if (MSVC)
@@ -160,12 +158,7 @@ target_include_directories(${PROJECT_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/src
     ${CMAKE_CURRENT_BINARY_DIR}/src
 )
-target_link_libraries(${PROJECT_NAME} PUBLIC fmt::fmt)
-if (TARGET mbits::libsemver)
-  target_link_libraries(${PROJECT_NAME} PUBLIC mbits::libsemver)
-elseif(TARGET semver)
-  target_link_libraries(${PROJECT_NAME} PUBLIC semver)
-endif()
+target_link_libraries(${PROJECT_NAME} PUBLIC fmt::fmt mbits::libsemver)
 set_target_properties(${PROJECT_NAME} PROPERTIES
   VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
 )
