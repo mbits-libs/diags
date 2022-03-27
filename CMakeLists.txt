@@ -3,7 +3,7 @@
 
 cmake_minimum_required (VERSION 3.12)
 project (diags
-  VERSION 0.9.1
+  VERSION 0.9.2
   DESCRIPTION "Diagnostic library with source positions, ranges and hints."
   LANGUAGES CXX)
 
@@ -165,7 +165,7 @@ target_include_directories(${PROJECT_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/src
     ${CMAKE_CURRENT_BINARY_DIR}/src
 )
-target_link_libraries(${PROJECT_NAME} PUBLIC fmt::fmt mbits::libsemver)
+target_link_libraries(${PROJECT_NAME} PUBLIC fmt::fmt mbits-semver::semver)
 set_target_properties(${PROJECT_NAME} PROPERTIES
   VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
 )
