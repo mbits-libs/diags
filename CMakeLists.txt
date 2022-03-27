@@ -9,7 +9,8 @@ project (diags
 
 set(PROJECT_VERSION_STABILITY "") # "", or "-alpha", or "-beta", or "-rc.5"
 
-if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+set(DIAGS_BUILD_AS_STANDALONE OFF CACHE BOOL "Force build as if standalone")
+if (DIAGS_BUILD_AS_STANDALONE OR CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
   message(STATUS "diag: Standalone")
   set(DIAGS_STANDALONE ON)
   set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -181,3 +182,5 @@ if (DIAGS_TESTING)
 enable_testing()
 add_subdirectory(tests)
 endif()
+
+include (CPack)
