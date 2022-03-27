@@ -23,10 +23,33 @@ if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 
   find_package(Python3 COMPONENTS Interpreter REQUIRED)
 
-  include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-  conan_basic_setup()
-  find_package(GTest REQUIRED CONFIG HINTS ${PROJECT_BINARY_DIR})
-  find_package(fmt REQUIRED CONFIG HINTS ${PROJECT_BINARY_DIR})
+  set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_BINARY_DIR}")
+  set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} "${PROJECT_BINARY_DIR}")
+
+  find_program(CONAN_COMMAND NAMES conan conan.bat)
+
+  if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
+    message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
+    file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/0.17.0/conan.cmake"
+                  "${CMAKE_BINARY_DIR}/conan.cmake"
+                  EXPECTED_HASH SHA256=3bef79da16c2e031dc429e1dac87a08b9226418b300ce004cc125a82687baeef
+                  TLS_VERIFY ON)
+  endif()
+
+  set(CONAN_CMAKE_SILENT_OUTPUT ON)
+  include(${CMAKE_BINARY_DIR}/conan.cmake)
+  conan_cmake_autodetect(settings)
+
+  conan_cmake_install(PATH_OR_REFERENCE "${CMAKE_CURRENT_SOURCE_DIR}"
+                      BUILD missing
+                      REMOTE conancenter
+                      SETTINGS ${settings})
+
+
+  find_package(GTest REQUIRED)
+  find_package(fmt REQUIRED)
+  find_package(mbits-semver)
+
 else()
   message(STATUS "diag: Subdir")
   set(DIAGS_STANDALONE OFF)
@@ -137,7 +160,12 @@ target_include_directories(${PROJECT_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/src
     ${CMAKE_CURRENT_BINARY_DIR}/src
 )
-target_link_libraries(${PROJECT_NAME} PUBLIC fmt::fmt semver)
+target_link_libraries(${PROJECT_NAME} PUBLIC fmt::fmt)
+if (TARGET mbits::libsemver)
+  target_link_libraries(${PROJECT_NAME} PUBLIC mbits::libsemver)
+elseif(TARGET semver)
+  target_link_libraries(${PROJECT_NAME} PUBLIC semver)
+endif()
 set_target_properties(${PROJECT_NAME} PROPERTIES
   VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
 )

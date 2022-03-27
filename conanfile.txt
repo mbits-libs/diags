@@ -1,6 +1,7 @@
 [requires]
 fmt/7.0.3
 gtest/1.10.0
+mbits-semver/0.1.0
 
 [options]
 gtest:build_gmock=False
