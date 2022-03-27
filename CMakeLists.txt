@@ -9,7 +9,9 @@ project (diags
 
 set(PROJECT_VERSION_STABILITY "") # "", or "-alpha", or "-beta", or "-rc.5"
 
-set(DIAGS_BUILD_AS_STANDALONE OFF CACHE BOOL "Force build as if standalone")
+set(DIAGS_BUILD_FOR_CONAN OFF CACHE BOOL "Changes the conan requirement handling")
+set(DIAGS_BUILD_AS_STANDALONE ${DIAGS_BUILD_FOR_CONAN} CACHE BOOL "Force build as if standalone")
+
 if (DIAGS_BUILD_AS_STANDALONE OR CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
   message(STATUS "diag: Standalone")
   set(DIAGS_STANDALONE ON)
@@ -29,23 +31,27 @@ if (DIAGS_BUILD_AS_STANDALONE OR CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_
 
   find_program(CONAN_COMMAND NAMES conan conan.bat)
 
-  if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
-    message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
-    file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/0.17.0/conan.cmake"
-                  "${CMAKE_BINARY_DIR}/conan.cmake"
-                  EXPECTED_HASH SHA256=3bef79da16c2e031dc429e1dac87a08b9226418b300ce004cc125a82687baeef
-                  TLS_VERIFY ON)
-  endif()
-
   set(CONAN_CMAKE_SILENT_OUTPUT ON)
-  include(${CMAKE_BINARY_DIR}/conan.cmake)
-  conan_cmake_autodetect(settings)
+  if (DIAGS_BUILD_FOR_CONAN)
+    include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+    conan_basic_setup()
+  else(DIAGS_BUILD_FOR_CONAN)
+    if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
+      message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
+      file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/0.17.0/conan.cmake"
+                    "${CMAKE_BINARY_DIR}/conan.cmake"
+                    EXPECTED_HASH SHA256=3bef79da16c2e031dc429e1dac87a08b9226418b300ce004cc125a82687baeef
+                    TLS_VERIFY ON)
+    endif()
 
-  conan_cmake_install(PATH_OR_REFERENCE "${CMAKE_CURRENT_SOURCE_DIR}"
-                      BUILD missing
-                      REMOTE conancenter
-                      SETTINGS ${settings})
+    include(${CMAKE_BINARY_DIR}/conan.cmake)
+    conan_cmake_autodetect(settings)
 
+    conan_cmake_install(PATH_OR_REFERENCE "${CMAKE_CURRENT_SOURCE_DIR}"
+                        BUILD missing
+                        REMOTE conancenter
+                        SETTINGS ${settings})
+  endif(DIAGS_BUILD_FOR_CONAN)
 
   find_package(GTest REQUIRED)
   find_package(fmt REQUIRED)
