@@ -3,7 +3,7 @@
 
 cmake_minimum_required (VERSION 3.12)
 project (diags
-  VERSION 0.9.2
+  VERSION 0.9.3
   DESCRIPTION "Diagnostic library with source positions, ranges and hints."
   LANGUAGES CXX)
 
@@ -53,9 +53,9 @@ if (DIAGS_BUILD_AS_STANDALONE OR CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_
                         SETTINGS ${settings})
   endif(DIAGS_BUILD_FOR_CONAN)
 
-  find_package(GTest REQUIRED)
-  find_package(fmt REQUIRED)
-  find_package(mbits-semver REQUIRED)
+  find_package(GTest REQUIRED CONFIG)
+  find_package(fmt REQUIRED CONFIG)
+  find_package(mbits-semver REQUIRED CONFIG)
 
 else()
   message(STATUS "diag: Subdir")

@@ -35,7 +35,7 @@ namespace diags {
 	std::size_t outstream::vprint(fmt::string_view format_str,
 	                              fmt::format_args args) {
 		fmt::memory_buffer buffer;
-		fmt::vformat_to(buffer, format_str, args);
+		fmt::vformat_to(std::back_inserter(buffer), format_str, args);
 		return write(buffer.data(), buffer.size());
 	}
 
