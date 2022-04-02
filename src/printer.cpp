@@ -55,7 +55,8 @@ namespace diags {
 		    std::string_view{reinterpret_cast<char const*>(u8filename.data()),
 		                     u8filename.size()};
 
-		return fmt::format(links_fmt[index], filepath, pos.line, pos.column);
+		return fmt::format(fmt::runtime(links_fmt[index]), filepath, pos.line,
+		                   pos.column);
 	}
 
 	printer::line_indices printer::prepare_hint_lines(std::string_view line,

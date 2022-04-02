@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <cstdio>
 #include <filesystem>
+#include <vector>
 
 namespace diags {
 	namespace fs {
