@@ -26,33 +26,12 @@ if (DIAGS_BUILD_AS_STANDALONE OR CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_
 
   find_package(Python3 COMPONENTS Interpreter REQUIRED)
 
-  set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_BINARY_DIR}")
-  set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} "${PROJECT_BINARY_DIR}")
+  set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_BINARY_DIR}/conan")
+  set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} "${PROJECT_BINARY_DIR}/conan")
 
   find_program(CONAN_COMMAND NAMES conan conan.bat)
 
   set(CONAN_CMAKE_SILENT_OUTPUT ON)
-  if (DIAGS_BUILD_FOR_CONAN)
-    include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-    conan_basic_setup()
-  else(DIAGS_BUILD_FOR_CONAN)
-    if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
-      message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
-      file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/0.17.0/conan.cmake"
-                    "${CMAKE_BINARY_DIR}/conan.cmake"
-                    EXPECTED_HASH SHA256=3bef79da16c2e031dc429e1dac87a08b9226418b300ce004cc125a82687baeef
-                    TLS_VERIFY ON)
-    endif()
-
-    include(${CMAKE_BINARY_DIR}/conan.cmake)
-    conan_cmake_autodetect(settings)
-
-    conan_cmake_install(PATH_OR_REFERENCE "${CMAKE_CURRENT_SOURCE_DIR}"
-                        BUILD missing
-                        REMOTE conancenter
-                        SETTINGS ${settings})
-  endif(DIAGS_BUILD_FOR_CONAN)
-
   find_package(GTest REQUIRED CONFIG)
   find_package(fmt REQUIRED CONFIG)
   find_package(mbits-semver REQUIRED CONFIG)
@@ -165,7 +144,7 @@ target_include_directories(${PROJECT_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/src
     ${CMAKE_CURRENT_BINARY_DIR}/src
 )
-target_link_libraries(${PROJECT_NAME} PUBLIC fmt::fmt mbits-semver::semver)
+target_link_libraries(${PROJECT_NAME} PUBLIC fmt::fmt mbits::semver)
 set_target_properties(${PROJECT_NAME} PROPERTIES
   VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
 )

@@ -17,7 +17,7 @@ namespace diags::fs {
 		auto dst = buff;
 		auto end = dst + len;
 		while (dst != end)
-			*dst++ = *mode++;
+			*dst++ = static_cast<unsigned char>(*mode++);
 		*dst = 0;
 
 		return ::_wfopen(file.native().c_str(), buff);

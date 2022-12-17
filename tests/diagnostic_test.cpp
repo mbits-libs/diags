@@ -24,11 +24,11 @@ namespace diags::testing {
 	TEST_P(diagnostic_builder, compare) {
 		auto const& [diag, expected] = GetParam();
 
-		auto actual = [&] {
+		auto actual = [&](diagnostic const& diag_binding) {
 			std::ostringstream oss;
-			info(oss, diag);
+			info(oss, diag_binding);
 			return oss.str();
-		}();
+		}(diag);
 
 		EXPECT_EQ(expected, actual);
 	}

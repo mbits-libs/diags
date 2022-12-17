@@ -1,11 +1,7 @@
 [requires]
-fmt/8.1.1
+fmt/9.1.0
 gtest/cci.20210126
-mbits-semver/0.1.0
-
-[options]
-gtest:build_gmock=False
+mbits-semver/0.1.1
 
 [generators]
-cmake
-cmake_find_package_multi
+CMakeDeps
