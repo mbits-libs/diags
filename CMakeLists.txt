@@ -3,7 +3,7 @@
 
 cmake_minimum_required (VERSION 3.12)
 project (diags
-  VERSION 0.9.3
+  VERSION 0.9.4
   DESCRIPTION "Diagnostic library with source positions, ranges and hints."
   LANGUAGES CXX)
 
