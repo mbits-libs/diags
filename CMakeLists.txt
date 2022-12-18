@@ -30,12 +30,6 @@ if (DIAGS_BUILD_AS_STANDALONE OR CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_
   set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} "${PROJECT_BINARY_DIR}/conan")
 
   find_program(CONAN_COMMAND NAMES conan conan.bat)
-
-  set(CONAN_CMAKE_SILENT_OUTPUT ON)
-  find_package(GTest REQUIRED CONFIG)
-  find_package(fmt REQUIRED CONFIG)
-  find_package(mbits-semver REQUIRED CONFIG)
-
 else()
   message(STATUS "diag: Subdir")
   set(DIAGS_STANDALONE OFF)
@@ -43,6 +37,15 @@ endif()
 
 set(DIAGS_TESTING ${DIAGS_STANDALONE} CACHE BOOL "Compile and/or run self-tests")
 set(DIAGS_INSTALL ${DIAGS_STANDALONE} CACHE BOOL "Install the library")
+
+if (DIAGS_STANDALONE)
+  set(CONAN_CMAKE_SILENT_OUTPUT ON)
+  if (DIAGS_TESTING)
+    find_package(GTest REQUIRED CONFIG)
+  endif()
+  find_package(fmt REQUIRED CONFIG)
+  find_package(mbits-semver REQUIRED CONFIG)
+endif()
 
 if (DIAGS_TESTING)
   set(COVERALLS_PREFIX DIAGS_)
