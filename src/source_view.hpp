@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <algorithm>
 #include <diags/source_code.hpp>
 #include <diags/sources.hpp>
 
