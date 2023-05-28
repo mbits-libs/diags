@@ -1,0 +1,48 @@
+{
+    "version": 4,
+    "configurePresets": [
+        {
+            "name": "base",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_POLICY_DEFAULT_CMP0091": "NEW"
+            },
+            "toolchainFile": "${sourceDir}/build/conan/conan_toolchain.cmake"
+        },
+        {
+            "name": "release-base",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            },
+            "binaryDir": "${sourceDir}/build/release"
+        },
+        {
+            "name": "debug-base",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            },
+            "binaryDir": "${sourceDir}/build/debug"
+        },
+        {
+            "name": "ninja-base",
+            "hidden": true,
+            "generator": "Ninja"
+        },
+        {
+            "name": "make-base",
+            "hidden": true,
+            "generator": "Unix Makefiles"
+        },
+        {
+            "name": "msbuild-base",
+            "hidden": true,
+            "generator": "Visual Studio 17 2022",
+            "architecture": "x64",
+            "cacheVariables": {
+                "WITH_JSAPI": true
+            }
+        }
+    ]
+}

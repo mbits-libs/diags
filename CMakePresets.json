@@ -1,0 +1,40 @@
+{
+    "version": 4,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 23,
+        "patch": 0
+    },
+    "include": [
+        "cmake/matrix.json"
+    ],
+    "configurePresets": [],
+    "buildPresets": [
+        {
+            "name": "release",
+            "displayName": "Build for Release",
+            "configurePreset": "release",
+            "configuration": "Release"
+        },
+        {
+            "name": "debug",
+            "displayName": "Build for Debug",
+            "configurePreset": "debug",
+            "configuration": "Debug"
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "debug",
+            "displayName": "Test a Debug build",
+            "configurePreset": "debug",
+            "configuration": "Debug"
+        },
+        {
+            "name": "release",
+            "displayName": "Test a Release build",
+            "configurePreset": "release",
+            "configuration": "Release"
+        }
+    ]
+}

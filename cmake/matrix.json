@@ -1,0 +1,80 @@
+{
+    "version": 4,
+    "include": [
+        "base-profiles.json"
+    ],
+    "configurePresets": [
+        {
+            "name": "release",
+            "displayName": "Release",
+            "description": "Release build",
+            "inherits": [
+                "base",
+                "release-base"
+            ]
+        },
+        {
+            "name": "release-ninja",
+            "displayName": "Ninja (Release)",
+            "description": "Release build using Ninja generator",
+            "inherits": [
+                "release",
+                "ninja-base"
+            ]
+        },
+        {
+            "name": "release-make",
+            "displayName": "Makefile (Release)",
+            "description": "Release build using Unix Makefiles generator",
+            "inherits": [
+                "release",
+                "make-base"
+            ]
+        },
+        {
+            "name": "release-msbuild",
+            "displayName": "Visual Studio (Release)",
+            "description": "Release build using Visual Studio generator",
+            "inherits": [
+                "release",
+                "msbuild-base"
+            ]
+        },
+        {
+            "name": "debug",
+            "displayName": "Debug",
+            "description": "Debug build",
+            "inherits": [
+                "base",
+                "debug-base"
+            ]
+        },
+        {
+            "name": "debug-ninja",
+            "displayName": "Ninja (Debug)",
+            "description": "Debug build using Ninja generator",
+            "inherits": [
+                "debug",
+                "ninja-base"
+            ]
+        },
+        {
+            "name": "debug-make",
+            "displayName": "Makefile (Debug)",
+            "description": "Debug build using Unix Makefiles generator",
+            "inherits": [
+                "debug",
+                "make-base"
+            ]
+        },
+        {
+            "name": "debug-msbuild",
+            "displayName": "Visual Studio (Debug)",
+            "description": "Debug build using Visual Studio generator",
+            "inherits": [
+                "debug",
+                "msbuild-base"
+            ]
+        }
+    ]
+}
