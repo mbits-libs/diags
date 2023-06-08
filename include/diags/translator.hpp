@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <diags/location.hpp>
 #include <stdexcept>
+#include <string>
 #include <string_view>
 
 namespace diags {
